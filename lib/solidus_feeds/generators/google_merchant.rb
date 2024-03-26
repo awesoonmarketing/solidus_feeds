@@ -6,6 +6,7 @@ module SolidusFeeds
   module Generators
     # The GoogleMerchant XML feed as described in https://support.google.com/merchants/answer/7052112.
     class GoogleMerchant
+
       attr_accessor :products, :host
 
       def initialize(products, host:)
@@ -21,25 +22,27 @@ module SolidusFeeds
       def render_template(xml)
         xml.rss version: "2.0", "xmlns:g" => "http://base.google.com/ns/1.0" do
           xml.channel do
-            xml.title SolidusFeeds.title
-            xml.link SolidusFeeds.link
+            xml.title 'Wheelfetch'
+            xml.link 'https://wheelfetch.com'
             xml.description SolidusFeeds.description
             xml.language SolidusFeeds.language
-            products.find_each do |product|
-              xml.item do
-                xml.tag! 'g:id', id(product)
-                xml.tag! 'g:title', title(product)
-                xml.tag! 'g:description', description(product)
-                xml.tag! 'g:link', link(product)
-                xml.tag! 'g:image_link', image_link(product)
-                xml.tag! 'g:condition', condition(product)
-                xml.tag! 'g:price', price(product)
-                xml.tag! 'g:availability', availability(product)
-                xml.tag! 'g:brand', brand(product)
-                xml.tag! 'g:mpn', mpn(product)
-                xml.tag! 'g:google_product_category', google_product_category_id(product)
-              end
+        products.find_each do |product|
+          product.variants.each do |variant| # Corrected line: Added .each for iteration
+            xml.item do
+              xml.tag! 'g:id', id(variant)
+              xml.tag! 'g:title', title(variant)
+              xml.tag! 'g:description', description(product)
+              xml.tag! 'g:link', link(product)
+              xml.tag! 'g:image_link', image_link(variant)
+              xml.tag! 'g:condition', condition(product)
+              xml.tag! 'g:price', price(variant)
+              xml.tag! 'g:availability', availability(product)
+              xml.tag! 'g:brand', brand(product)
+              xml.tag! 'g:mpn', mpn(product)
+              xml.tag! 'g:google_product_category', google_product_category_id(product)
             end
+          end
+        end
           end
         end
       end
@@ -57,7 +60,7 @@ module SolidusFeeds
       end
 
       def link(product)
-        spree_routes.product_url(product, host: host)
+       "#{host}/products/#{product.slug}"
       end
 
       def image_link(product)
@@ -97,6 +100,10 @@ module SolidusFeeds
       end
 
       private
+
+
+
+
 
       def spree_routes
         @spree_routes ||= ::Spree::Core::Engine.routes.url_helpers

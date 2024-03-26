@@ -2,14 +2,14 @@
 
 SolidusFeeds.configure do |config|
   # The store name appearing on the feeds
-  # config.title = 'My store name'
+  config.title = 'Wheelfetch'
   #
   # The URL appearing on the feeds
-  # config.link = 'https://example.com'
+  config.link = 'https://wheelfetch.com'
   #
   # The description appearing on the feeds
-  # config.description = 'Find out about new products on https://example.com'
+  config.description = 'Find out about new products on https://wheelfetch.com'
   #
   # The language of the feeds
-  # config.language = 'en-us'
+  config.language = 'en-us'
 end
